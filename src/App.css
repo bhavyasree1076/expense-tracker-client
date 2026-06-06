@@ -1,38 +1,463 @@
-.App {
+/* FULL BACKGROUND */
+.container {
+  min-height: 100vh;
+  padding: 20px;
+  color: white;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364, #ff416c, #ff4b2b);
+  background-size: 400% 400%;
+  animation: bgMove 12s ease infinite;
+}
+
+/* animation */
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* DARK MODE */
+.container.dark {
+  background: #111 !important;
+}
+
+/* BUTTONS (TRANSPARENT STYLE) */
+button {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 6px 12px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: white;
+  color: black;
+}
+
+/* NAV / TOP BUTTONS AREA */
+.top-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* DASHBOARD LAYOUT */
+.dashboard-layout {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* LEFT SIDE */
+.left-section {
+  flex: 2;
+  background: rgba(255,255,255,0.1);
+  padding: 15px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+/* RIGHT SIDE */
+.right-section {
+  flex: 1;
+  background: rgba(255,255,255,0.1);
+  padding: 15px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+/* TABLE CLEAN */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+th {
+  text-align: left;
+}
+
+/* CARDS */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.card {
+  background: rgba(255,255,255,0.12);
+  padding: 12px;
+  border-radius: 10px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* PIE CHART SMALL */
+.recharts-wrapper {
+  width: 220px !important;
+  height: 220px !important;
+  margin: auto;
+}
+/* LOGIN & REGISTER PAGE */
+
+.auth-container{
+
+  min-height:100vh;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  background:linear-gradient(
+    -45deg,
+    #6a11cb,
+    #2575fc,
+    #00c9ff,
+    #92fe9d,
+    #fc466b,
+    #3f5efb
+  );
+
+  background-size:400% 400%;
+
+  animation:bgAnimation 12s ease infinite;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@keyframes bgAnimation{
+
+  0%{
+    background-position:0% 50%;
+  }
+
+  50%{
+    background-position:100% 50%;
+  }
+
+  100%{
+    background-position:0% 50%;
+  }
+
+}
+
+.auth-card{
+
+  width:420px;
+
+  padding:40px;
+
+  border-radius:25px;
+
+  background:rgba(255,255,255,0.15);
+
+  backdrop-filter:blur(20px);
+
+  border:1px solid rgba(255,255,255,0.2);
+
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+
+  text-align:center;
+
+  color:white;
+}
+
+.auth-card h1{
+
+  margin-bottom:5px;
+
+  font-size:32px;
+}
+
+.auth-card h2{
+
+  margin-bottom:25px;
+}
+
+.auth-card input{
+
+  width:100%;
+
+  padding:14px;
+
+  margin:10px 0;
+
+  border:none;
+
+  border-radius:12px;
+
+  background:rgba(255,255,255,0.2);
+
+  color:white;
+
+  outline:none;
+
+  box-sizing:border-box;
+}
+
+.auth-card input::placeholder{
+  color:#f0f0f0;
+}
+
+.auth-card button{
+
+  width:100%;
+
+  padding:14px;
+
+  margin-top:15px;
+
+  border:none;
+
+  border-radius:12px;
+
+  background:linear-gradient(
+    135deg,
+    #2575fc,
+    #6a11cb
+  );
+
+  color:white;
+
+  font-size:16px;
+
+  cursor:pointer;
+
+  transition:0.3s;
+}
+
+.auth-card button:hover{
+
+  transform:translateY(-2px);
+
+  box-shadow:0 6px 15px rgba(0,0,0,0.3);
+}
+
+.auth-card p{
+
+  margin-top:20px;
+}
+
+.auth-card a{
+
+  color:#fff;
+
+  font-weight:bold;
+
+  text-decoration:none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .left-section,
+  .right-section {
+    width: 100%;
+  }
+
+  table {
+    font-size: 12px;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* COMMON INPUT STYLE */
+.input-box {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 6px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  outline: none;
+  backdrop-filter: blur(8px);
+  transition: 0.3s;
+}
+
+/* placeholder color */
+.input-box::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+/* focus effect */
+.input-box:focus {
+  border: 1px solid #ffffff;
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.02);
+}
+
+select.input-box option {
+  color: black;
+}
+
+/* 📱 MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .left-section,
+  .right-section {
+    width: 100%;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  table {
+    font-size: 12px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .auth-card {
+    width: 90%;
+    margin: auto;
+  }
+
+  h1 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+
+}
+
+/* 🔥 MODAL OVERLAY */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* 💎 MODAL BOX */
+.modal-box {
+  width: 320px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 12px;
+  color: white;
+  animation: pop 0.3s ease-in-out;
+}
+
+/* ✨ INPUTS INSIDE MODAL */
+.modal-box input,
+.modal-box select {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+/* 🎯 BUTTONS */
+.modal-box button {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
-@keyframes App-logo-spin {
+/* UPDATE BUTTON */
+.modal-box button:first-of-type {
+  background: #4cafef;
+  color: white;
+}
+
+.modal-box button:first-of-type:hover {
+  background: #2196f3;
+}
+
+/* CLOSE BUTTON */
+.modal-box button:last-of-type {
+  background: #ff4d4d;
+  color: white;
+}
+
+.modal-box button:last-of-type:hover {
+  background: #e60000;
+}
+
+/* 🌟 POP ANIMATION */
+@keyframes pop {
   from {
-    transform: rotate(0deg);
+    transform: scale(0.8);
+    opacity: 0;
   }
   to {
-    transform: rotate(360deg);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.chart-container {
+  width: 100%;
+  max-width: 420px;
+  height: 350px;
+  margin: 20px auto;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    max-width: 280px;
+    height: 280px;
   }
 }

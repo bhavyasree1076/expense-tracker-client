@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import "../App.css";
 import ExpenseChart from "../components/ExpenseChart";
@@ -29,9 +29,9 @@ function Dashboard() {
 
     fetchExpenses();
 
-  }, []);
+  }, [fetchExpenses, token]);
 
-  const fetchExpenses = async () => {
+  const fetchExpenses = useCallback(async () => {
 
     try {
 
@@ -52,7 +52,7 @@ function Dashboard() {
 
     }
 
-  };
+  }, [token]);
 
   const addExpense = async (e) => {
 

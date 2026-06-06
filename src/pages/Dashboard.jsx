@@ -47,7 +47,7 @@ function Dashboard() {
     }
 
     fetchExpenses();
-  }, [token]);
+  }, [token, fetchExpenses]);
 
   const addExpense = async (e) => {
     e.preventDefault();

@@ -36,7 +36,7 @@ function Dashboard() {
     try {
 
       const res = await axios.get(
-        "http://localhost:5000/api/expenses",
+        "https://expense-tracker-server-1-iyq3.onrender.com/api/expenses",
         {
           headers: {
             Authorization: token
@@ -63,7 +63,7 @@ function Dashboard() {
     if (editId) {
 
       await axios.put(
-        `http://localhost:5000/api/expenses/${editId}`,
+        `https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/${editId}`,
         {
           title,
           amount,
@@ -81,7 +81,7 @@ function Dashboard() {
     } else {
 
       await axios.post(
-        "http://localhost:5000/api/expenses/add",
+        "https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/add",
         {
           title,
           amount,
@@ -112,7 +112,7 @@ function Dashboard() {
     try {
 
       await axios.delete(
-        `http://localhost:5000/api/expenses/${id}`,
+        `https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/${id}`,
         {
           headers: {
             Authorization: token
@@ -226,7 +226,7 @@ const shoppingTotal = expenses
       try {
 
         await axios.delete(
-          "http://localhost:5000/api/expenses/clear",
+          "https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/clear",
           {
             headers: {
               Authorization: token

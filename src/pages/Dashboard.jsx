@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "../App.css";
 import ExpenseChart from "../components/ExpenseChart";
@@ -8,33 +8,22 @@ import { toast } from "react-toastify";
 import CountUp from "react-countup";
 
 function Dashboard() {
-  const [search,setSearch]=useState("");
+  const [search, setSearch] = useState("");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [expenses, setExpenses] = useState([]);
   const [filterCategory, setFilterCategory] = useState("");
-  const token = localStorage.getItem("token");
   const [editId, setEditId] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
+  const token = localStorage.getItem("token");
 
-    if (!token) {
-      window.location.href = "/";
-      return;
-    }
-
-    fetchExpenses();
-
-  }, [fetchExpenses, token]);
-
+  // ✅ FIXED: define function BEFORE useEffect (IMPORTANT for Netlify)
   const fetchExpenses = async () => {
-
     try {
-
       const res = await axios.get(
         "https://expense-tracker-server-1-iyq3.onrender.com/api/expenses",
         {
@@ -45,490 +34,268 @@ function Dashboard() {
       );
 
       setExpenses(res.data);
-
     } catch (error) {
-
-        toast.error("Failed to Fetch Expenses");
-
+      toast.error("Failed to Fetch Expenses");
     }
-
   };
+
+  // ✅ single clean useEffect
   useEffect(() => {
-
-  if (!token) {
-    window.location.href = "/";
-    return;
-  }
-
-  fetchExpenses();
-
-}, []);
-
-  const addExpense = async (e) => {
-
-  e.preventDefault();
-
-  try {
-
-    if (editId) {
-
-      await axios.put(
-        `https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/${editId}`,
-        {
-          title,
-          amount,
-          category
-        },
-        {
-          headers: {
-            Authorization: token
-          }
-        }
-      );
-      toast.success("Expense Updated Successfully");
-      setEditId(null);
-
-    } else {
-
-      await axios.post(
-        "https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/add",
-        {
-          title,
-          amount,
-          category
-        },
-        {
-          headers: {
-            Authorization: token
-          }
-        }
-      );
-      toast.success("Expense Added Successfully");
+    if (!token) {
+      window.location.href = "/";
+      return;
     }
-
-    setTitle("");
-    setAmount("");
-    setCategory("");
 
     fetchExpenses();
+  }, [token]);
 
-  } catch (error) {
-  toast.error("Operation Failed");
-}
-
-};
-  const deleteExpense = async (id) => {
+  const addExpense = async (e) => {
+    e.preventDefault();
 
     try {
+      if (editId) {
+        await axios.put(
+          `https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/${editId}`,
+          { title, amount, category },
+          { headers: { Authorization: token } }
+        );
 
+        toast.success("Expense Updated Successfully");
+        setEditId(null);
+      } else {
+        await axios.post(
+          "https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/add",
+          { title, amount, category },
+          { headers: { Authorization: token } }
+        );
+
+        toast.success("Expense Added Successfully");
+      }
+
+      setTitle("");
+      setAmount("");
+      setCategory("");
+
+      fetchExpenses();
+    } catch (error) {
+      toast.error("Operation Failed");
+    }
+  };
+
+  const deleteExpense = async (id) => {
+    try {
       await axios.delete(
         `https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/${id}`,
         {
-          headers: {
-            Authorization: token
-          }
+          headers: { Authorization: token }
         }
       );
-      
-       toast.success("Expense Deleted Successfully");  
+
+      toast.success("Expense Deleted Successfully");
       fetchExpenses();
-
     } catch (error) {
-
-     toast.error("Delete Failed");
-
+      toast.error("Delete Failed");
     }
-
   };
 
   const logout = () => {
-
     localStorage.removeItem("token");
-
     window.location.href = "/";
-
   };
 
   const total = expenses.reduce(
     (sum, item) => sum + Number(item.amount),
     0
   );
+
   const foodTotal = expenses
-  .filter((exp) => exp.category === "Food")
-  .reduce((sum, exp) => sum + Number(exp.amount), 0);
+    .filter((exp) => exp.category === "Food")
+    .reduce((sum, exp) => sum + Number(exp.amount), 0);
 
-const travelTotal = expenses
-  .filter((exp) => exp.category === "Travel")
-  .reduce((sum, exp) => sum + Number(exp.amount), 0);
+  const travelTotal = expenses
+    .filter((exp) => exp.category === "Travel")
+    .reduce((sum, exp) => sum + Number(exp.amount), 0);
 
-const educationTotal = expenses
-  .filter((exp) => exp.category === "Education")
-  .reduce((sum, exp) => sum + Number(exp.amount), 0);
+  const educationTotal = expenses
+    .filter((exp) => exp.category === "Education")
+    .reduce((sum, exp) => sum + Number(exp.amount), 0);
 
   const entertainmentTotal = expenses
-  .filter((exp) => exp.category === "Entertainment")
-  .reduce((sum, exp) => sum + Number(exp.amount), 0);
+    .filter((exp) => exp.category === "Entertainment")
+    .reduce((sum, exp) => sum + Number(exp.amount), 0);
 
-const shoppingTotal = expenses
-  .filter((exp) => exp.category === "Shopping")
-  .reduce((sum, exp) => sum + Number(exp.amount), 0);
+  const shoppingTotal = expenses
+    .filter((exp) => exp.category === "Shopping")
+    .reduce((sum, exp) => sum + Number(exp.amount), 0);
 
   const downloadExcel = () => {
+    const excelData = expenses.map((exp) => ({
+      Title: exp.title,
+      Amount: exp.amount,
+      Category: exp.category,
+      Date: new Date(exp.date).toLocaleDateString("en-IN")
+    }));
 
-  const excelData = expenses.map((exp) => ({
-    Title: exp.title,
-    Amount: exp.amount,
-    Category: exp.category,
-    Date: new Date(exp.date).toLocaleDateString("en-IN")
-  }));
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
 
-  const worksheet =
-    XLSX.utils.json_to_sheet(excelData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Expenses");
 
-  const workbook =
-    XLSX.utils.book_new();
-
-  XLSX.utils.book_append_sheet(
-    workbook,
-    worksheet,
-    "Expenses"
-  );
-
-  const excelBuffer =
-    XLSX.write(workbook, {
+    const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array"
     });
 
-  const data = new Blob(
-    [excelBuffer],
-    {
+    const data = new Blob([excelBuffer], {
       type:
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    }
-  );
+    });
 
-  saveAs(
-    data,
-    "Expense_Report.xlsx"
-  );
-
-};
+    saveAs(data, "Expense_Report.xlsx");
+  };
 
   return (
-
     <div className={darkMode ? "container dark" : "container"}>
 
-       <button
-  onClick={downloadExcel}
-  style={{
-    marginRight: "10px"
-  }}
->
-  Download Report
-</button>
+      <button onClick={downloadExcel}>Download Report</button>
 
-<button
-  onClick={async () => {
+      <button
+        onClick={async () => {
+          if (window.confirm("Delete all expenses?")) {
+            try {
+              await axios.delete(
+                "https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/clear",
+                {
+                  headers: { Authorization: token }
+                }
+              );
 
-    if(window.confirm("Delete all expenses?")){
-
-      try {
-
-        await axios.delete(
-          "https://expense-tracker-server-1-iyq3.onrender.com/api/expenses/clear",
-          {
-            headers: {
-              Authorization: token
+              fetchExpenses();
+              toast.success("All Expenses Deleted");
+            } catch (error) {
+              toast.error("Operation Failed");
             }
           }
-        );
-
-        fetchExpenses();
-
-        toast.success("Expense Deleted Successfully");
-
-      } catch (error) {
-
-       toast.error("Operation Failed");
-
-      }
-
-    }
-
-  }}
->
-  Clear All
-</button>
-  
-      <button
-        style={{ float: "right" }}
-        onClick={logout}
+        }}
       >
+        Clear All
+      </button>
+
+      <button style={{ float: "right" }} onClick={logout}>
         Logout
       </button>
 
-      <button
-  onClick={() => setDarkMode(!darkMode)}
->
-  {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
-</button>
+      <button onClick={() => setDarkMode(!darkMode)}>
+        {darkMode ? "☀ Light Mode" : "🌙 Dark Mode"}
+      </button>
 
       <h1>Expense Tracker</h1>
 
       <div className="dashboard-layout">
 
-  {/* LEFT SIDE */}
-  <div className="left-section">
+        {/* LEFT */}
+        <div className="left-section">
 
-      <input className="input-box"
-        type="text"
-        placeholder="Search Expense"
-        value={search}
-        onChange={(e)=>setSearch(e.target.value)}
-      />
-      <select className="input-box"
-  value={filterCategory}
-  onChange={(e) => setFilterCategory(e.target.value)}
->
-  <option value="">All Categories</option>
-  <option value="Food">Food</option>
-  <option value="Travel">Travel</option>
-  <option value="Education">Education</option>
-  <option value="Entertainment">Entertainment</option>
-  <option value="Shopping">Shopping</option>
-</select>
+          <input
+            className="input-box"
+            placeholder="Search Expense"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-      <form onSubmit={addExpense}>
+          <select
+            className="input-box"
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            <option value="Food">Food</option>
+            <option value="Travel">Travel</option>
+            <option value="Education">Education</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Shopping">Shopping</option>
+          </select>
 
-        <input className="input-box"
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
+          <form onSubmit={addExpense}>
+            <input
+              className="input-box"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
 
-        <input className="input-box"
-          type="number"
-          placeholder="Amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          required
-        />
+            <input
+              className="input-box"
+              type="number"
+              placeholder="Amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              required
+            />
 
-        <select className="input-box"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-        >
-          <option value="">
-            Select Category
-          </option>
+            <select
+              className="input-box"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+            >
+              <option value="">Select Category</option>
+              <option>Food</option>
+              <option>Travel</option>
+              <option>Education</option>
+              <option>Entertainment</option>
+              <option>Shopping</option>
+            </select>
 
-          <option value="Food">
-            Food
-          </option>
+            <button type="submit">
+              {editId ? "Update Expense" : "Add Expense"}
+            </button>
+          </form>
 
-          <option value="Travel">
-            Travel
-          </option>
+        </div>
 
-          <option value="Education">
-            Education
-          </option>
+        {/* RIGHT */}
+        <div className="right-section">
 
-          <option value="Entertainment">
-            Entertainment
-          </option>
+          <div className="card">
+            <h3>Total</h3>
+            <h2>₹<CountUp end={total} /></h2>
+          </div>
 
-          <option value="Shopping">
-            Shopping
-          </option>
+          <div className="card">
+            <h3>Food</h3>
+            <h2>₹<CountUp end={foodTotal} /></h2>
+          </div>
 
-        </select>
+          <div className="card">
+            <h3>Travel</h3>
+            <h2>₹<CountUp end={travelTotal} /></h2>
+          </div>
 
-        <button type="submit">
-           {editId ? "Update Expense" : "Add Expense"}
-        </button>
+          <div className="card">
+            <h3>Education</h3>
+            <h2>₹<CountUp end={educationTotal} /></h2>
+          </div>
 
-      </form>
+          <div className="card">
+            <h3>Entertainment</h3>
+            <h2>₹<CountUp end={entertainmentTotal} /></h2>
+          </div>
 
+          <div className="card">
+            <h3>Shopping</h3>
+            <h2>₹<CountUp end={shoppingTotal} /></h2>
+          </div>
 
-<input className="input-box"
-  type="month"
-  value={selectedMonth}
-  onChange={(e) => setSelectedMonth(e.target.value)}
-/>
+          <ExpenseChart expenses={expenses} />
 
-      <table>
+        </div>
 
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-       {expenses
-.filter((exp) =>
-  exp.title
-    .toLowerCase()
-    .includes(search.toLowerCase())
-)
-.filter((exp) =>
-  filterCategory === ""
-    ? true
-    : exp.category === filterCategory
-)
- .filter((exp) =>
-    selectedMonth === ""
-      ? true
-      : exp.date.slice(0, 7) === selectedMonth
-  )
-.map((exp) => (
-
-            <tr key={exp._id}>
-
-             <td>{exp.title}</td>
-
-         <td>₹{exp.amount}</td>
-
-        <td>{exp.category}</td>
-
-        <td>
-  {new Date(exp.date).toLocaleDateString("en-IN")}
-</td>
-              <td>
-
-                <button
-                  className="delete-btn"
-                  onClick={() => {
-
-  if(window.confirm("Delete this expense?")){
-    deleteExpense(exp._id);
-  }
-
-}}
-                >
-                  Delete
-                </button>
-                <button
-onClick={() => {
-
-  setEditId(exp._id);
-  setTitle(exp.title);
-  setAmount(exp.amount);
-  setCategory(exp.category);
-  setShowModal(true);
-}}
->
-Edit
-</button>
-
-              </td>
-
-            </tr>
-
-          ))}
-
-        </tbody>
-
-      </table>
- </div>     
-
-      {/* RIGHT */}
-  <div className="right-section">
-    <div className="cards-grid">
-
-    <div className="card">
-      <h3>Total Expenses</h3>
-      <h2>₹<CountUp end={total} duration={1.5} separator="," /></h2>
-    </div>
-
-    <div className="card">
-      <h3>Food</h3>
-      <h2>₹<CountUp end={foodTotal} duration={1.5} /></h2>
-    </div>
-
-    <div className="card">
-      <h3>Travel</h3>
-      <h2>₹<CountUp end={travelTotal} duration={1.5} /></h2>
-    </div>
-
-    <div className="card">
-      <h3>Education</h3>
-      <h2>₹<CountUp end={educationTotal} duration={1.5} /></h2>
-    </div>
-
-    <div className="card">
-      <h3>Entertainment</h3>
-      <h2>₹<CountUp end={entertainmentTotal} duration={1.5} /></h2>
-    </div>
-
-    <div className="card">
-      <h3>Shopping</h3>
-      <h2>₹<CountUp end={shoppingTotal} duration={1.5} /></h2>
-    </div>
+      </div>
 
     </div>
-    <ExpenseChart expenses={expenses} />
-
-</div>
-
-    </div>
-
-{showModal && (
-  <div className="modal-overlay">
-    <div className="modal-box">
-
-      <h2>Edit Expense</h2>
-
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
-      />
-
-      <input
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="Amount"
-      />
-
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-      >
-        <option>Food</option>
-        <option>Travel</option>
-        <option>Education</option>
-        <option>Entertainment</option>
-        <option>Shopping</option>
-      </select>
-
-      <button onClick={addExpense}>
-        Update
-      </button>
-
-      <button
-        onClick={() => setShowModal(false)}
-      >
-        Close
-      </button>
-
-    </div>
-  </div>
-)}
-
-    </div>
-    );
-
+  );
 }
 
 export default Dashboard;

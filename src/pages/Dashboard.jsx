@@ -31,7 +31,7 @@ function Dashboard() {
 
   }, [fetchExpenses, token]);
 
-  const fetchExpenses = useCallback(async () => {
+  const fetchExpenses = async () => {
 
     try {
 
@@ -52,7 +52,17 @@ function Dashboard() {
 
     }
 
-  }, [token]);
+  };
+  useEffect(() => {
+
+  if (!token) {
+    window.location.href = "/";
+    return;
+  }
+
+  fetchExpenses();
+
+}, []);
 
   const addExpense = async (e) => {
 

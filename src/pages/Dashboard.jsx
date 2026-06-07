@@ -38,7 +38,7 @@ function Dashboard() {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   useEffect(() => {
     if (!token) {
       window.location.href = "/";
@@ -46,7 +46,9 @@ function Dashboard() {
     }
 
     fetchExpenses();
-  }, [token]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addExpense = async (e) => {
     e.preventDefault();

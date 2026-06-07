@@ -17,7 +17,6 @@ function Dashboard() {
   const [editId, setEditId] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [darkMode, setDarkMode] = useState(false);
-  const [showModal, setShowModal] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -39,7 +38,7 @@ function Dashboard() {
     }
   };
 
-  // ✅ single clean useEffect
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!token) {
       window.location.href = "/";
@@ -47,7 +46,7 @@ function Dashboard() {
     }
 
     fetchExpenses();
-  }, []);
+  }, [token]);
 
   const addExpense = async (e) => {
     e.preventDefault();

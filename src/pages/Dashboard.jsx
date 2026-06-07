@@ -310,6 +310,7 @@ function Dashboard() {
             </button>
 
             <button
+            type="button"
               className="edit-btn"
               onClick={() => {
                 setEditId(exp._id);

@@ -47,7 +47,7 @@ function Dashboard() {
     }
 
     fetchExpenses();
-  }, [token, fetchExpenses]);
+  }, []);
 
   const addExpense = async (e) => {
     e.preventDefault();
@@ -251,14 +251,89 @@ function Dashboard() {
             <button type="submit">
               {editId ? "Update Expense" : "Add Expense"}
             </button>
+
+            <input
+  className="input-box"
+  type="month"
+  value={selectedMonth}
+  onChange={(e) => setSelectedMonth(e.target.value)}
+/>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Date</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {expenses
+      .filter((exp) =>
+        exp.title.toLowerCase().includes(search.toLowerCase())
+      )
+      .filter((exp) =>
+        filterCategory === ""
+          ? true
+          : exp.category === filterCategory
+      )
+      .filter((exp) =>
+        selectedMonth === ""
+          ? true
+          : exp.date.slice(0, 7) === selectedMonth
+      )
+      .map((exp) => (
+        <tr key={exp._id}>
+          <td>{exp.title}</td>
+          <td>₹{exp.amount}</td>
+          <td>{exp.category}</td>
+          <td>
+            {new Date(exp.date).toLocaleDateString("en-IN")}
+          </td>
+
+          <td>
+            <button
+              className="delete-btn"
+              onClick={() => {
+                if (
+                  window.confirm("Delete this expense?")
+                ) {
+                  deleteExpense(exp._id);
+                }
+              }}
+            >
+              Delete
+            </button>
+
+            <button
+              className="edit-btn"
+              onClick={() => {
+                setEditId(exp._id);
+                setTitle(exp.title);
+                setAmount(exp.amount);
+                setCategory(exp.category);
+              }}
+            >
+              Edit
+            </button>
+          </td>
+        </tr>
+      ))}
+  </tbody>
+</table>
           </form>
 
         </div>
 
         {/* RIGHT */}
         <div className="right-section">
+        <div className="cards-grid">
 
           <div className="card">
+
             <h3>Total</h3>
             <h2>₹<CountUp end={total} /></h2>
           </div>
@@ -286,6 +361,7 @@ function Dashboard() {
           <div className="card">
             <h3>Shopping</h3>
             <h2>₹<CountUp end={shoppingTotal} /></h2>
+          </div>
           </div>
 
           <ExpenseChart expenses={expenses} />

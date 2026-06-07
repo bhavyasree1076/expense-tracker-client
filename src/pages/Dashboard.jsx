@@ -20,7 +20,7 @@ function Dashboard() {
 
   const token = localStorage.getItem("token");
 
-  // ✅ FIXED: define function BEFORE useEffect (IMPORTANT for Netlify)
+
   const fetchExpenses = async () => {
     try {
       const res = await axios.get(
